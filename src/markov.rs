@@ -20,16 +20,10 @@ impl<'a> MarkovGenerator<'a> {
     {
         MarkovGenerator { rng, prefix: vec![], suffix: HashMap::new() }
     }
-    pub fn get_prefixes(&self) -> Vec<String> {
-        self.prefix.clone()
-    }
-    pub fn get_suffixes(&self) -> HashMap<String, Vec<String>> {
-        self.suffix.clone()
-    }
     pub fn generate(&mut self, length: i32) -> String {
         let mut res: Vec<String> = vec![];
         let mut prefix: String = random_element_rng(&mut self.prefix, self.rng).clone();
-        let mut suffix: String = String::new();
+        let mut suffix: String;
         res.push(prefix.clone());
         while get_word_count(&res) < length as usize {
             match self.suffix.get_mut(&prefix) {
