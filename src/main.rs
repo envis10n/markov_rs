@@ -1,5 +1,5 @@
+use clap::{crate_authors, crate_version, Clap};
 use rand::prelude::*;
-use clap::{Clap, crate_version, crate_authors};
 use std::fs;
 use std::path::Path;
 use std::str;
@@ -17,8 +17,12 @@ struct Opts {
     word_count: Option<usize>,
     #[clap(short = 'n', long, about = "N value for generation. Default: 2")]
     n_count: Option<usize>,
-    #[clap(short = 'o', long, about = "Out file path. If missing, will output to stdout instead.")]
-    out_path: Option<String>
+    #[clap(
+        short = 'o',
+        long,
+        about = "Out file path. If missing, will output to stdout instead."
+    )]
+    out_path: Option<String>,
 }
 
 fn main() {
