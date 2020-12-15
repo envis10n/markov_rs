@@ -1,5 +1,4 @@
 use rand::prelude::*;
-use crate::markov::MarkovGenerator;
 use clap::{Clap, crate_version, crate_authors};
 use std::fs;
 use std::path::Path;
@@ -7,6 +6,8 @@ use std::str;
 
 mod markov;
 mod random;
+
+use markov::MarkovGenerator;
 
 #[derive(Clap)]
 #[clap(version = crate_version!(), author = crate_authors!())]
