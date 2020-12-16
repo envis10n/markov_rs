@@ -2,9 +2,12 @@ use crate::random::*;
 use rand::prelude::*;
 use std::cmp::min;
 use std::collections::HashMap;
+use rand::rngs::OsRng;
+
+mod random;
 
 pub struct MarkovGenerator<'a> {
-    rng: &'a mut dyn RngCore,
+    rng: Option<&'a mut dyn RngCore>,
     prefix: Vec<String>,
     suffix: HashMap<String, Vec<String>>,
 }
@@ -16,23 +19,35 @@ fn get_word_count(v: &[String]) -> usize {
 }
 
 impl<'a> MarkovGenerator<'a> {
-    pub fn new(rng: &'a mut dyn RngCore) -> Self {
+    pub fn with_rng(rng: &'a mut dyn RngCore) -> Self {
         MarkovGenerator {
-            rng,
+            rng: Some(rng),
+            prefix: vec![],
+            suffix: HashMap::new(),
+        }
+    }
+    pub fn new() -> Self {
+        MarkovGenerator {
+            rng: None,
             prefix: vec![],
             suffix: HashMap::new(),
         }
     }
     pub fn generate(&mut self, length: i32) -> String {
         let mut res: Vec<String> = vec![];
-        let mut prefix: String = random_element_rng(&mut self.prefix, self.rng).clone();
+        let mut osrng = OsRng.clone();
+        let mut rng: &mut dyn RngCore = &mut osrng;
+        if let Some(r) = &mut self.rng {
+            rng = *r;
+        }
+        let mut prefix: String = random_element_rng(&mut self.prefix, rng).clone();
         let mut suffix: String;
         res.push(prefix.clone());
         while get_word_count(&res) < length as usize {
             match self.suffix.get_mut(&prefix) {
                 Some(suf) => {
                     if suf.len() > 1 {
-                        suffix = random_element_rng(suf, self.rng).clone();
+                        suffix = random_element_rng(suf, rng).clone();
                     } else {
                         suffix = suf[0].clone();
                     }
@@ -41,7 +56,7 @@ impl<'a> MarkovGenerator<'a> {
                     prefix = String::from(*t.last().unwrap()) + " " + &suffix;
                 }
                 None => {
-                    prefix = random_element_rng(&mut self.prefix, self.rng).clone();
+                    prefix = random_element_rng(&mut self.prefix, rng).clone();
                 }
             }
         }
@@ -71,7 +86,7 @@ impl<'a> MarkovGenerator<'a> {
 }
 
 #[cfg(test)]
-mod markov_tests {
+mod tests {
     #[test]
     fn test_word_count() {
         let mut a: Vec<String> = vec![];

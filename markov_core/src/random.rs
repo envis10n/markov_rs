@@ -11,7 +11,7 @@ pub fn random_element<'a, T>(vec: &'a mut Vec<T>) -> &'a T {
 }
 
 #[cfg(test)]
-mod random_tests {
+mod tests {
     #[test]
     fn rand_element() {
         let mut a: Vec<u8> = vec![0xff, 0x20, 0x30];

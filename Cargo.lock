@@ -123,6 +123,13 @@ name = "markov"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "markov_core",
+]
+
+[[package]]
+name = "markov_core"
+version = "0.1.0"
+dependencies = [
  "rand",
 ]
 
